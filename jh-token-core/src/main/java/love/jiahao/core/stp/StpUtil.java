@@ -1,4 +1,4 @@
-package love.jiahao.stp;
+package love.jiahao.core.stp;
 
 /**
  * <big>Token权限认证工具类</big>

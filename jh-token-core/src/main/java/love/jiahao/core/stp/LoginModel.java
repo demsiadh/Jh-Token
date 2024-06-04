@@ -1,4 +1,4 @@
-package love.jiahao.stp;
+package love.jiahao.core.stp;
 
 /**
  * <big>指定登录模式</big>
