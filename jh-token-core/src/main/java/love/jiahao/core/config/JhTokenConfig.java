@@ -20,7 +20,7 @@ public class JhTokenConfig implements Serializable {
     /**
      * 日志等级（debug、info、warn、error），此值与 logLevelInt 联动
      */
-    private String logLevel = "trace";
+    private String logLevel = "debug";
 
     /**
      * 日志等级 int 值（1=debug、2=info、3=warn、4=error），此值与 logLevel 联动
