@@ -28,9 +28,24 @@ public class JhTokenConfig implements Serializable {
     private int logLevelInt = 1;
 
     /**
+     * 是否启用动态activeTimeOut功能，如果不需要请设置为false，节省缓存请求次数
+     */
+    private Boolean dynamicActiveTimeout = false;
+
+    /**
+     * token 失效时间(单位秒) 默认1天， -1 代表永久
+     */
+    private long timeout = 60 * 60 * 24;
+
+    /**
+     * 是否在登录后将 token 写入到响应头
+     */
+    private Boolean isWriteHeader = false;
+
+    /**
      * 是否打印彩色日志
      */
-    private Boolean isColorLog = null;
+    private Boolean isColorLog = false;
 
     public Boolean getIsLog() {
         return isLog;
@@ -64,6 +79,54 @@ public class JhTokenConfig implements Serializable {
 
     public JhTokenConfig setColorLog(Boolean colorLog) {
         isColorLog = colorLog;
+        return this;
+    }
+
+    /**
+     * @return 是否启用动态 activeTimeout 功能，如不需要请设置为 false，节省缓存请求次数
+     */
+    public Boolean getDynamicActiveTimeout() {
+        return dynamicActiveTimeout;
+    }
+
+    /**
+     * @param dynamicActiveTimeout 是否启用动态 activeTimeout 功能，如不需要请设置为 false，节省缓存请求次数
+     * @return 对象自身
+     */
+    public JhTokenConfig setDynamicActiveTimeout(Boolean dynamicActiveTimeout) {
+        this.dynamicActiveTimeout = dynamicActiveTimeout;
+        return this;
+    }
+
+    /**
+     * @return token 有效期（单位：秒） 默认30天，-1 代表永久有效
+     */
+    public long getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * @param timeout token 有效期（单位：秒） 默认30天，-1 代表永久有效
+     * @return 对象自身
+     */
+    public JhTokenConfig setTimeout(long timeout) {
+        this.timeout = timeout;
+        return this;
+    }
+
+    /**
+     * @return 是否在登录后将 token 写入到响应头
+     */
+    public Boolean getIsWriteHeader() {
+        return isWriteHeader;
+    }
+
+    /**
+     * @param isWriteHeader 是否在登录后将 token 写入到响应头
+     * @return 对象自身
+     */
+    public JhTokenConfig setIsWriteHeader(Boolean isWriteHeader) {
+        this.isWriteHeader = isWriteHeader;
         return this;
     }
 }

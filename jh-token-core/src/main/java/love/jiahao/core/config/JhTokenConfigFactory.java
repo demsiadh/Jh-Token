@@ -115,7 +115,7 @@ public class JhTokenConfigFactory {
         // 初始化一个空的HashMap用于存储属性文件的键值对
         Map<String, String> map = new HashMap<>();
         try (
-                InputStream inputStream = JhTokenConfigFactory.class.getClassLoader().getResourceAsStream(path);
+                InputStream inputStream = JhTokenConfigFactory.class.getClassLoader().getResourceAsStream(path)
         ) {
             // 获取属性文件的输入流
             // 如果输入流为空，则说明属性文件不存在，直接返回null

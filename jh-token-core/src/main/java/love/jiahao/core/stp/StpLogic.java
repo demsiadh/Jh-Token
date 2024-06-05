@@ -1,11 +1,15 @@
 package love.jiahao.core.stp;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import love.jiahao.core.JhManager;
+import love.jiahao.core.config.JhTokenConfig;
 import love.jiahao.core.error.JhErrorCode;
 import love.jiahao.core.exception.JhTokenException;
 import love.jiahao.core.exception.NotLoginException;
 import love.jiahao.core.utils.HuToolUtil;
+
+import java.util.Map;
 
 /**
  * <big>Token 权限认证，逻辑实现类</big>
@@ -19,6 +23,29 @@ public class StpLogic {
      * 账号类型标识，多账号体系时（一个系统多套用户表）用此值区分具体要校验的是哪套用户，比如：login、user、admin
      */
     public String loginType;
+    /**
+     * 当前对象配置
+     */
+    private JhTokenConfig config;
+
+    /**
+     * 获取当前StpLogic配置信息
+     * @return 当前StpLogic配置信息
+     */
+    public JhTokenConfig getConfig() {
+        return this.config;
+    }
+
+    /**
+     * 设置当前StpLogic配置信息
+     * @param config 当前StpLogic配置信息
+     * @return 当前对象
+     */
+    public StpLogic setConfig(JhTokenConfig config) {
+        this.config = config;
+        return this;
+    }
+
     public String getLoginType() {
         return this.loginType;
     }
@@ -60,6 +87,15 @@ public class StpLogic {
         // 1. 校验参数是否有效
         checkLoginArgs(id, loginModel);
 
+        // 2.初始化loginModel，给一些参数补上默认值(也就说没有配置的使用全局配置)
+        JhTokenConfig jhTokenConfig = getConfigOrGlobal();
+        // 根据配置设置当前登录模式的登录配置
+        loginModel.build(jhTokenConfig);
+
+        // 3.给当前账号分配一个可用的token
+
+
+
         return null;
     }
 
@@ -78,6 +114,35 @@ public class StpLogic {
         if (!HuToolUtil.isBasicType(id)) {
             JhManager.log.warn("loginId 应该为简单类型，例如：String | int | long，不推荐使用复杂类型：" + id.getClass());
         }
+
+        // 4.判断当前 StpLogic 是否支持extra扩展参数
+        if (!isSupportExtra()) {
+            Map<String, Object> extraData = loginModel.getExtraData();
+            if (MapUtil.isNotEmpty(extraData)) {
+                JhManager.log.warn("当前 StpLogic 不支持 extra 扩展参数模式，传入的 extra 参数将被忽略");
+            }
+        }
+
+        // 5、如果全局配置未启动动态 activeTimeout 功能，但是此次登录却传入了 activeTimeout 参数，那么就打印警告信息
+        if(!getConfigOrGlobal().getDynamicActiveTimeout() && ObjectUtil.isNotEmpty(loginModel.getActiveTimeout())) {
+            JhManager.log.warn("当前全局配置未开启动态 activeTimeout 功能，传入的 activeTimeout 参数将被忽略");
+        }
+    }
+
+    /**
+     * 返回当前StpLogic使用的配置对象，如果没有配置，则使用全局配置
+     * @return 当前StpLogic使用的配置对象
+     */
+    public JhTokenConfig getConfigOrGlobal() {
+        JhTokenConfig cfg = this.getConfig();
+        if (ObjectUtil.isNotEmpty(cfg)) {
+            return cfg;
+        }
+        return JhManager.getConfig();
+    }
+
+    public boolean isSupportExtra() {
+        return false;
     }
 
 
